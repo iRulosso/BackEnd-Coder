@@ -1,17 +1,18 @@
-const fs = require('fs');
+import fs from 'fs'
 
-class ProductManager {
+export default class ProductManager {
     constructor(path) {
         this.path = path
     }
 
     async getProducts() {
-        try {
+        if(fs.existsSync(this.path))
+        {
             const data = await fs.promises.readFile(this.path, 'utf-8');
             const products = JSON.parse(data);
             return products
-        }
-        catch{
+        }else
+        {
             return []
         }
     }
@@ -41,12 +42,11 @@ class ProductManager {
     }
 
     async getProductById(id) {
-        let _products = await this.getProducts();
-        for (let i = 0; i < _products.length; i++)
-            if (id === _products[i].id)
-                return _products[i];
-
-        return console.log(`No se ha encontrado un producto con id: ${id}`);
+        let products = await this.getProducts();
+        const product = products.find(p => p.id === id);
+        if(product)
+            return product;
+        return 0;
     }
 
     async updateProduct(id, obj)
@@ -85,15 +85,3 @@ class ProductManager {
         return console.log("Producto eliminado correctamente");
     }
 }
-
-const manager = new ProductManager("./test.json");
-let product =
-{
-    title: "Titulo",
-    description: "descr",
-    price: 500,
-    thumbnail: "fdkfsd",
-    code: 432545,
-    stock: 10
-}
-manager.getProducts();
