@@ -12,9 +12,9 @@ router.get('/', async (req, res) => {
     try {
         let products = await productModel.find();
         if (limit != 0)
-            res.send({message: "Success", products: products.slice(0, limit)});
+            res.send({ message: "Success", products: products.slice(0, limit) });
         else
-            res.send({message: "Success", products: products});
+            res.send({ message: "Success", products: products });
     } catch (error) {
         res.send({ error: "Error al traer los productos" });
     }
@@ -26,12 +26,15 @@ router.get('/', async (req, res) => {
         res.send(products.slice(0, limit));
     else
         res.send(products);*/
+
+    const socketServer = req.app.get('socketio');
+    socketServer.sockets.emit("refreshProduct");
 });
 
 router.get('/:pid', async (req, res) => {
-    const {pid} = req.params;
+    const { pid } = req.params;
     try {
-        let product = await productModel.find({_id:pid});
+        let product = await productModel.find({ _id: pid });
         res.send({ result: product });
     } catch (error) {
         res.status(400).send({ error: "Error al buscar el producto con dicha ID" });
@@ -52,7 +55,7 @@ router.post('/', async (req, res) => {
     if (!title || !description || !price || !thumbnail || !stock || !code)
         return res.send({ error: `No se han proporcionado todos los campos` });
 
-        
+
     try {
         let result = await productModel.create({
             title,
@@ -93,7 +96,7 @@ router.put('/:pid', async (req, res) => {
     }
 
     try {
-        const result = await productModel.updateOne({_id:id},{$set:newProduct});
+        const result = await productModel.updateOne({ _id: id }, { $set: newProduct });
         res.send({ result: "Producto actualizado correctamente" });
     } catch (error) {
         res.send({ error: "Error al actualizar el producto" });
