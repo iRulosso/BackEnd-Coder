@@ -1,0 +1,18 @@
+<div>
+        <h1>Productos</h1>
+    <ul>
+        {{#each products.docs}}
+            <li>{{this.title}}</li>
+        {{/each}}
+    </ul>
+    <div>
+        {{#if products.hasPrevPage}}
+            <a href="/products?page={{products.prevPage}}">Anterior</a>
+        {{/if}}
+        <span>Pagina: {{products.page}} de {{products.totalPages}}</span>
+        {{#if products.hasNextPage}}
+            <a href="/products?page={{products.nextPage}}">Siguiente</a>
+        {{/if}}
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
