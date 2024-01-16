@@ -52,15 +52,64 @@ router.post('/:cid/product/:pid', async (req,res)=>{///
     const {cid, pid} = req.params;
 
     try {
-        const result = await cartModel.updateOne({_id:cid},{$set:pid});
+        const result = await cartModel.updateOne({_id:cid},{$push:{ products: {product: pid, quantity: 1}}});
         res.send({ result: "Carrito actualizado correctamente" });
     } catch (error) {
-        res.send({ error: "Error al actualizar el carrito" });
+        res.send({ error: "Error al actualizar el carrito", result });
     }
 
     /*
     const respuesta = await cartManager.addProductToCart(cid, pid);
     res.send(respuesta);*/
+});
+
+router.delete('/:cid/products/:pid', async (req, res) => {
+    const cid = req.params.cid;
+    const pid = req.params.pid;
+
+    try {
+        const result = await cartModel.updateOne(
+            {_id:cid},
+            { $pull: { products: { product: pid } } }
+          );
+        res.send({ message: "Producto eleminado correctamente del carrito" });
+    } catch (error) {
+        res.send({ error: "No se ha podido eliminar el producto del carrito" });
+    }
+});
+
+router.put('/:cid/products/:pid', async (req, res) => {
+    const cid = req.params.cid;
+    const pid = req.params.pid;
+
+    const { cantidad } = req.body;
+
+    if (!cantidad)
+        return res.send({ error: `Body mal formado` });
+
+    try {
+        const result = await cartModel.updateOne(
+            { _id: cid, 'products.id': pid },
+            { $set: { 'products.$.quantity': cantidad } }
+          );
+        res.send({ result: "Producto actualizado correctamente" });
+    } catch (error) {
+        res.send({ error: "Error al actualizar el producto" });
+    }
+});
+
+router.delete('/:cid', async (req, res) => {
+    const cid = req.params.cid;
+
+    try {
+        const result = await cartModel.updateOne(
+            { _id: cid },
+            { $unset: { products: 1 } }
+          );
+        res.send({ message: "Productos eleminados correctamente del carrito" });
+    } catch (error) {
+        res.send({ error: "No se ha podido eliminar los productos del carrito" });
+    }
 });
 
 export default router;

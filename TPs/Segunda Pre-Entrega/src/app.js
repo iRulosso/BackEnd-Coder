@@ -16,7 +16,7 @@ const httpServer = app.listen(8080,()=>console.log("Servidor iniciado"));
 const socketServer = new Server(httpServer);
 app.set('socketio', socketServer);
 
-app.engine('handlebars', handlebars.engine());
+app.engine('handlebars', handlebars.engine({runtimeOptions:{allowProtoPropertiesByDefault:true,allowedProtoMethodsByDefault:true}}));
 app.set('views', __dirname+'/views')
 app.set('view engine','handlebars');
 
