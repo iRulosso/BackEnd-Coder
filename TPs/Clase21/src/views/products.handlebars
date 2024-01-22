@@ -1,0 +1,20 @@
+<div>
+        <h1>Productos</h1>
+        <h3>Bienvenido {{obj.session.full_name}}!</h3>
+        <h4>Rol: {{obj.session.rol}}</h4><a href="/api/session/logout">logout</a>
+    <ul>
+        {{#each obj.products.docs}}
+            <li>{{this.title}} <button>Add to Cart</button></li>
+        {{/each}}
+    </ul>
+    <div>
+        {{#if obj.products.hasPrevPage}}
+            <a href="/products?page={{obj.products.prevPage}}">Anteriora</a>
+        {{/if}}
+        <span>Pagina: {{obj.products.page}} de {{obj.products.totalPages}}</span>
+        {{#if obj.products.hasNextPage}}
+            <a href="/products?page={{obj.products.nextPage}}">Siguiente</a>
+        {{/if}}
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
