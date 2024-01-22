@@ -5,6 +5,24 @@ const router = express.Router();
 import { productModel } from "../dao/Models/product.model.js";
 import { cartModel } from "../dao/Models/cart.model.js";
 
+const publicAccess = (req,res,next)=>
+{
+    if(req.session.user)
+    {
+        return res.redirect('/products');
+    }
+    next();
+}
+
+const privateAccess = (req,res,next)=>
+{
+    if(!req.session.user)
+    {
+        return res.redirect('/login');
+    }
+    next();
+}
+
 router.get('/', async (req, res)=>
 {
     const products = await productManager.getProducts();
@@ -22,7 +40,7 @@ router.get('/chat', async (req, res)=>
 {
     res.render('chat', {});
 });
-router.get('/products', async (req, res)=>
+router.get('/products', privateAccess, async (req, res)=>
 {
     let limit = parseInt(req.query.limit,10) || 10;
     let page = parseInt(req.query.page,10) || 1;
@@ -63,10 +81,10 @@ router.get('/carts/:cid', async (req, res)=>
     }
 });
 
-router.get('/register', async (req, res)=>{
+router.get('/register', publicAccess,  (req, res)=>{
     res.render('register');
 });
-router.get('/login', async (req, res)=>{
+router.get('/login', publicAccess, (req, res)=>{
     res.render('login');
 });
 

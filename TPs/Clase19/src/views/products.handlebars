@@ -1,7 +1,7 @@
 <div>
         <h1>Productos</h1>
         <h3>Bienvenido {{obj.session.full_name}}!</h3>
-        <h4>Rol: {{obj.session.rol}}</h4>
+        <h4>Rol: {{obj.session.rol}}</h4><a href="/api/session/logout">logout</a>
     <ul>
         {{#each obj.products.docs}}
             <li>{{this.title}} <button>Add to Cart</button></li>
